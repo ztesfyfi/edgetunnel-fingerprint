@@ -13,9 +13,7 @@
 
 ## 📖 项目简介
 
-> **指纹增强版部署提示：** 本仓库的入口 `_worker.js` 会导入上游核心文件 `_worker-core.js`。首次部署前，先进入 GitHub Actions 手动运行 `Upstream Core Sync`，它会从 cmliu/edgetunnel 下载并提交 `_worker-core.js`。同步完成后，仓库会同时包含这两个文件，再通过 Wrangler 或 GitHub 集成部署；不要只把 `_worker.js` 单文件粘贴进 Dashboard 编辑器。
-
-**edgetunnel** 是一个基于 CF Workers/Pages 平台的边缘计算隧道解密方案。它能够高效地处理网络流量，并提供强大的管理面板和灵活的节点配置能力。
+> **指纹增强版部署提示：** 仓库根目录的 `_worker.js` 已经包含上游核心和 TLS 指纹增强逻辑，是唯一需要部署的 Worker 脚本。GitHub Actions 会定期从上游拉取核心并自动重新生成该文件。\n\n**edgetunnel** 是一个基于 CF Workers/Pages 平台的边缘计算隧道解密方案。它能够高效地处理网络流量，并提供强大的管理面板和灵活的节点配置能力。
 
 - 🖥️ **Demo 演示站点**：[https://EDT-Pages.github.io/admin](https://EDT-Pages.github.io/admin)
 
@@ -44,7 +42,7 @@
 
 1. 部署 CF Worker：
    - 在 CF Worker 控制台中创建一个新的 Worker。
-   - 推荐在仓库根目录使用 Wrangler 部署（`npx wrangler deploy`），确保 `_worker.js` 与 `_worker-core.js` 一起部署。此增强版入口依赖核心模块，不能只粘贴单个 `_worker.js` 文件。
+   - 推荐在仓库根目录使用 Wrangler 部署（`npx wrangler deploy`）。当前版本已将上游核心与指纹增强逻辑合并到单个 `_worker.js`，无需额外上传核心文件。
    - 在左侧的 `设置`选项卡中，选择 `变量` > `添加变量`。
      变量名称填写**ADMIN**，值则为你的管理员密码，后点击 `保存`即可。
 
