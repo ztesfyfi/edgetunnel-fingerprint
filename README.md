@@ -13,7 +13,9 @@
 
 ## 📖 项目简介
 
-> **指纹增强版部署提示：** 仓库根目录的 `_worker.js` 已经包含上游核心和 TLS 指纹增强逻辑，是唯一需要部署的 Worker 脚本。GitHub Actions 会定期从上游拉取核心并自动重新生成该文件。\n\n**edgetunnel** 是一个基于 CF Workers/Pages 平台的边缘计算隧道解密方案。它能够高效地处理网络流量，并提供强大的管理面板和灵活的节点配置能力。
+> **指纹增强版部署提示：** 仓库根目录的 `_worker.js` 已经包含上游核心和 TLS 指纹增强逻辑，是唯一需要部署的 Worker 脚本。GitHub Actions 会定期从上游拉取核心并自动重新生成该文件。
+
+**edgetunnel** 是一个基于 CF Workers/Pages 平台的边缘计算隧道解密方案。它能够高效地处理网络流量，并提供强大的管理面板和灵活的节点配置能力。
 
 - 🖥️ **Demo 演示站点**：[https://EDT-Pages.github.io/admin](https://EDT-Pages.github.io/admin)
 
