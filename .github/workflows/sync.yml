@@ -30,7 +30,7 @@ jobs:
           git fetch upstream main
           git show upstream/main:_worker.js > _worker-core.js
           node --check _worker-core.js
-          if git diff --quiet -- _worker-core.js; then
+          if [ -f _worker-core.js ] && git diff --quiet -- _worker-core.js; then
             echo "Upstream core is already current."
             exit 0
           fi
