@@ -8,6 +8,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/sync.yml"
+      - "_worker.js"
   schedule:
     - cron: "17 3 * * *"
   workflow_dispatch:
