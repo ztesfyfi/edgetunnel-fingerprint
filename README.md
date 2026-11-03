@@ -269,7 +269,9 @@ https://你的域名/sub?target=singbox&sbcert=1
 
 > 指纹检测会把待检测的公开域名发送给配置的 TLS 检测 API。缓存不自动过期：服务器证书续期或更换后，旧指纹会继续使用，直到你通过 `refreshfp=1` 主动刷新。刷新失败时保留旧缓存。Xray 的 `pcs` 是完整证书指纹，Sing-box 默认的 SPKI 指纹不是同一种哈希对象，二者不能互换。
 
-### 上游文件结构
+### 单文件构建与上游同步
 
-- `_worker.js`：指纹增强包装层，负责识别订阅格式并追加指纹。
-- `_worker-core.js`：由 `Upstream Core Sync` 工作流从上游同步的 Worker 核心文件。首次部署前必须先运行该工作流。
+- `_worker.js`：唯一需要部署的 Worker 文件，包含完整上游核心及 TLS 指纹增强逻辑。
+- `_worker-enhancer.js`：指纹增强层源代码，仅用于自动构建，不需要单独部署。
+- `scripts/build-single-worker.mjs`：将上游核心默认导出转换为内部变量，再与增强层合并生成单文件。
+- `Upstream Core Sync` 每天自动检查上游更新，也可在 GitHub Actions 中手动运行。构建完成后自动执行语法检查并提交更新。
