@@ -43,4 +43,5 @@ jobs:
           fi
           git add _worker.js
           git commit -m "chore: rebuild single-file Worker from upstream"
+          git pull --rebase origin main
           git push origin main
