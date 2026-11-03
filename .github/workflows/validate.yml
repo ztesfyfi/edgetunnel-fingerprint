@@ -1,15 +1,18 @@
-name: Validate Worker sources
+name: Validate single-file Worker
 
 on:
   push:
     branches: [main]
     paths:
       - "_worker.js"
-      - "_worker-core.js"
+      - "_worker-enhancer.js"
+      - "scripts/build-single-worker.mjs"
+      - ".github/workflows/validate.yml"
   pull_request:
     paths:
       - "_worker.js"
-      - "_worker-core.js"
+      - "_worker-enhancer.js"
+      - "scripts/build-single-worker.mjs"
 
 jobs:
   syntax:
@@ -19,11 +22,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Check JavaScript syntax
+      - name: Check deployable Worker syntax
+        run: node --check _worker.js
+      - name: Test single-file builder
         run: |
+          set -euo pipefail
+          git fetch --depth=1 https://github.com/cmliu/edgetunnel.git main
+          git show FETCH_HEAD:_worker.js > /tmp/edgetunnel-upstream-core.js
+          cp _worker.js /tmp/worker-before.js
+          node scripts/build-single-worker.mjs /tmp/edgetunnel-upstream-core.js
           node --check _worker.js
-          if [ -f _worker-core.js ]; then
-            node --check _worker-core.js
-          else
-            echo "Core not synced yet; run Upstream Core Sync before deployment."
-          fi
