@@ -1,4 +1,4 @@
-name: Upstream Core Sync
+name: Build and sync single Worker
 
 permissions:
   contents: write
@@ -8,13 +8,12 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/sync.yml"
-      - "_worker.js"
   schedule:
     - cron: "17 3 * * *"
   workflow_dispatch:
 
 jobs:
-  sync-core:
+  build-single-worker:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout target repo
@@ -22,19 +21,26 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
-      - name: Sync upstream Worker core only
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Fetch upstream core and build one-file Worker
         run: |
           set -euo pipefail
-          git config user.name "GH Action - Upstream Core Sync"
-          git config user.email "action@github.com"
           git remote add upstream https://github.com/cmliu/edgetunnel.git
-          git fetch upstream main
-          git show upstream/main:_worker.js > _worker-core.js
-          node --check _worker-core.js
-          if [ -z "$(git status --porcelain -- _worker-core.js)" ]; then
-            echo "Upstream core is already current."
+          git fetch --depth=1 upstream main
+          git show upstream/main:_worker.js > /tmp/edgetunnel-upstream-core.js
+          node scripts/build-single-worker.mjs /tmp/edgetunnel-upstream-core.js
+          node --check _worker.js
+      - name: Commit generated Worker if changed
+        run: |
+          set -euo pipefail
+          git config user.name "GH Action - Single Worker Builder"
+          git config user.email "action@github.com"
+          if git diff --quiet -- _worker.js; then
+            echo "Single-file Worker is already current."
             exit 0
           fi
-          git add _worker-core.js
-          git commit -m "chore: sync upstream Worker core"
+          git add _worker.js
+          git commit -m "chore: rebuild single-file Worker from upstream"
           git push origin main
