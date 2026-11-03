@@ -261,3 +261,5 @@ export default {
 		return buildResponse(response, wasBase64 ? btoa(result.text) : result.text);
 	}
 };
+
+// Repository bootstrap marker; no runtime behavior change.
